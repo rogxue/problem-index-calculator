@@ -41,7 +41,7 @@ namespace ProblemIndexCalculator
         }
         public String GetShortDateText()
         {
-            return dt.ToString("MMM yyyy");
+            return dt.ToString("MMM. yyyy");
         }
         public String GetDateDirtyText()
         {

@@ -14,11 +14,26 @@ namespace ProblemIndexCalculator
     {
         private Product product;
         private bool confirm = false;
+        private string productName = "";
 
         public EditForm(Product p)
         {
             product = p;
             InitializeComponent();
+            //
+            // DEFAULT SETTINGS
+            // 
+            txtBoxTarget.Text = "30";
+            txtBoxRtyWeight.Text = "1";
+            txtBoxObaWeight.Text = "3";
+            txtBoxHotWeight.Text = "7";
+            txtBoxAgrrWeight.Text = "5";
+            txtBoxRtyCutoff1.Text = "95";
+            txtBoxRtyCutoff2.Text = "85";
+            txtBoxObaCutoff1.Text = "1200";
+            txtBoxObaCutoff2.Text = "1500";
+            txtBoxAgrrCutoff1.Text = "5";
+            txtBoxAgrrCutoff2.Text = "15";
         }
 
         public EditForm(Product p, Boolean b)
@@ -160,6 +175,7 @@ namespace ProblemIndexCalculator
             else
             {
                 confirm = true;
+                productName = txtBoxName.Text;
                 Close();
             }
         }
@@ -218,36 +234,46 @@ namespace ProblemIndexCalculator
         private void txtBoxRtyCutoff1_TextChanged(object sender, EventArgs e)
         {
             txtBoxRtyCutoff1.ForeColor = Color.Black;
+            txtBoxRtyCutoff2.ForeColor = Color.Black;
         }
 
         private void txtBoxRtyCutoff2_TextChanged(object sender, EventArgs e)
         {
+            txtBoxRtyCutoff1.ForeColor = Color.Black;
             txtBoxRtyCutoff2.ForeColor = Color.Black;
         }
 
         private void txtBoxObaCutoff1_TextChanged(object sender, EventArgs e)
         {
             txtBoxObaCutoff1.ForeColor = Color.Black;
+            txtBoxObaCutoff2.ForeColor = Color.Black;
         }
 
         private void txtBoxObaCutoff2_TextChanged(object sender, EventArgs e)
         {
+            txtBoxObaCutoff1.ForeColor = Color.Black;
             txtBoxObaCutoff2.ForeColor = Color.Black;
         }
 
         private void txtBoxAgrrCutoff1_TextChanged(object sender, EventArgs e)
         {
             txtBoxAgrrCutoff1.ForeColor = Color.Black;
+            txtBoxAgrrCutoff2.ForeColor = Color.Black;
         }
 
         private void txtBoxAgrrCutoff2_TextChanged(object sender, EventArgs e)
         {
+            txtBoxAgrrCutoff1.ForeColor = Color.Black;
             txtBoxAgrrCutoff2.ForeColor = Color.Black;
         }
 
         public void SetFormName(String name)
         {
             this.Text = name;
+        }
+        public String GetProductName()
+        {
+            return productName;
         }
     }
 }

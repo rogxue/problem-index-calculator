@@ -18,14 +18,39 @@ namespace ProblemIndexCalculator
         public MainForm()
         {
             InitializeComponent();
+            this.Text = "Sustained Product Quality Index Calculator v" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
             DateTime d = DateTime.Now;
             dateText = d.ToString("MMMM yyyy");
             date = d.Month.ToString().PadLeft(2, '0') + d.Year;
             lblMonth.Text = dateText;
             DisableItems();
+            //
+            // Killing calculator button in favor of live updating
+            //
+            btnCalc.Visible = false;
+            //
+            // Kill save functions, no need for now
+            //
+            saveAsToolStripMenuItem.Visible = false;
+            saveToolStripMenuItem.Visible = false;
         }
 
         private void btnCalc_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                ParseNumbers();
+            }
+            catch
+            {
+                lblIndex.Text = "Invalid input.";
+                btnSave.Enabled = false;
+                return;
+            }
+            CalculateProblemIndex();
+        }
+
+        private void LiveUpdateProblemIndex()
         {
             try
             {
@@ -131,7 +156,7 @@ namespace ProblemIndexCalculator
             if (agrr > product.agrrCutoff1)
             {
                 agrrNorm = 3;
-                if (oba > product.agrrCutoff2)
+                if (agrr > product.agrrCutoff2)
                 {
                     agrrNorm = 5;
                 }
@@ -154,12 +179,13 @@ namespace ProblemIndexCalculator
 
         private void monthCalendar_DateChanged(object sender, DateRangeEventArgs e)
         {
-            btnSave.Enabled = false;
+            //btnSave.Enabled = false;
             DateTime d = monthCalendar.SelectionRange.Start;
             dateText = d.ToString("MMMM yyyy");
             date = d.Month.ToString().PadLeft(2, '0') + d.Year;
             lblMonth.Text = dateText;
             SetActiveProblemIndex();
+
         }
 
         private void SetActiveProblemIndex()
@@ -183,26 +209,26 @@ namespace ProblemIndexCalculator
 
         private void txtRty_TextChanged(object sender, EventArgs e)
         {
+            LiveUpdateProblemIndex();
             txtRty.ForeColor = Color.Black;
-            btnSave.Enabled = false;
         }
 
         private void txtOba_TextChanged(object sender, EventArgs e)
         {
             txtOba.ForeColor = Color.Black;
-            btnSave.Enabled = false;
+            LiveUpdateProblemIndex();
         }
 
         private void txtHot_TextChanged(object sender, EventArgs e)
         {
             txtHot.ForeColor = Color.Black;
-            btnSave.Enabled = false;
+            LiveUpdateProblemIndex();
         }
 
         private void txtAgrr_TextChanged(object sender, EventArgs e)
         {
             txtAgrr.ForeColor = Color.Black;
-            btnSave.Enabled = false;
+            LiveUpdateProblemIndex();
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -258,6 +284,7 @@ namespace ProblemIndexCalculator
                 SetWeightValues();
             }
             edit.Dispose();
+            lblProduct.Text = product.name;
         }
 
         private void newToolStripMenuItem_Click(object sender, EventArgs e)
@@ -271,6 +298,7 @@ namespace ProblemIndexCalculator
             {
                 SaveFileDialog sfd = new SaveFileDialog();
                 sfd.Filter = "XML Files (*.xml)|*.xml";
+                sfd.FileName = edit.GetProductName();
                 sfd.RestoreDirectory = true;
 
                 if (sfd.ShowDialog() == DialogResult.OK)
@@ -280,7 +308,7 @@ namespace ProblemIndexCalculator
                     Properties.Settings.Default.Save();
                     newProduct.WriteToXml(file);
                     product = newProduct;
-                    lblProduct.Text = "Product: " + product.name;
+                    lblProduct.Text = product.name;
                     SetWeightValues();
                     EnableItems();
                     lblActiveIndex.Visible = false;
@@ -297,15 +325,22 @@ namespace ProblemIndexCalculator
             dipList.Sort((x, y) => DateTime.Compare(x.dt, y.dt));
             foreach (DateIndexPair dip in dipList)
             {
-                data += dip.GetShortDateText() + ".\t\t" + dip.probIndex.ToString() + Environment.NewLine;
+                data += dip.GetShortDateText() + ":\t\t" + dip.probIndex.ToString() + Environment.NewLine;
             }
             MessageBox.Show(data, "SPQi Data");
         }
 
         private void createChartToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Chart c = new Chart(product);
-            c.Show();
+            if (product.dipList.Count != 0)
+            {
+                Chart c = new Chart(product);
+                c.Show();
+            }
+            else
+            {
+                MessageBox.Show("No data available.", "Error");
+            }
         }
 
         private void btnSave_Click(object sender, EventArgs e)
@@ -336,6 +371,15 @@ namespace ProblemIndexCalculator
                 product.WriteToXml(file);
                 SetActiveProblemIndex();
             }
+        }
+
+        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Problem Index Calculator v" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString() + "\n\n"
+                + "Copyright © 2016 Roger Xue\n"
+                + "Copyright © 2016 Avocados Only, Inc.\n\n"
+                + "All rights reserved.",
+                "About");
         }
 
         private void ParseXml(string filename)
@@ -422,7 +466,8 @@ namespace ProblemIndexCalculator
                 }
             }
             reader.Close();
-            lblProduct.Text = "Product: " + product.name;
+            lblProduct.Text = product.name;
+            lblProductLabel.Visible = true;
             lblProduct.Visible = true;
             SetActiveProblemIndex();
         }
@@ -439,6 +484,8 @@ namespace ProblemIndexCalculator
             editToolStripMenuItem.Enabled = false;
             saveAsToolStripMenuItem.Enabled = false;
             saveToolStripMenuItem.Enabled = false;
+            lblProductLabel.Visible = false;
+            lblProduct.Visible = false;
         }
 
         private void EnableItems()
@@ -453,6 +500,13 @@ namespace ProblemIndexCalculator
             editToolStripMenuItem.Enabled = true;
             saveAsToolStripMenuItem.Enabled = true;
             saveToolStripMenuItem.Enabled = true;
+            //
+            // Default values
+            //
+            txtRty.Text = "100";
+            txtOba.Text = "0";
+            txtHot.Text = "0";
+            txtAgrr.Text = "0";
         }
 
         private void SetWeightValues()
