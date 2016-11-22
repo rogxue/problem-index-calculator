@@ -209,8 +209,8 @@ namespace ProblemIndexCalculator
 
         private void txtRty_TextChanged(object sender, EventArgs e)
         {
-            LiveUpdateProblemIndex();
             txtRty.ForeColor = Color.Black;
+            LiveUpdateProblemIndex();
         }
 
         private void txtOba_TextChanged(object sender, EventArgs e)
