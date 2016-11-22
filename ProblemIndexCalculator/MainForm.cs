@@ -500,6 +500,8 @@ namespace ProblemIndexCalculator
             editToolStripMenuItem.Enabled = true;
             saveAsToolStripMenuItem.Enabled = true;
             saveToolStripMenuItem.Enabled = true;
+            lblProductLabel.Visible = true;
+            lblProduct.Visible = true;
             //
             // Default values
             //
