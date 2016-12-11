@@ -345,8 +345,21 @@ namespace ProblemIndexCalculator
         {
             if (product.dipList.Count != 0)
             {
-                Chart c = new Chart(product);
-                c.Show();
+                MonthSelectionForm msf = new MonthSelectionForm(product);
+                msf.ShowDialog(this);
+                if (msf.selectedDipList == null)
+                {
+                    // DO NOTHING
+                }
+                else if (msf.selectedDipList.Count == 0)
+                {
+                    MessageBox.Show("No data selected.", "Error");
+                }
+                else
+                {
+                    Chart c = new Chart(product, msf.selectedDipList);
+                    c.Show();
+                }
             }
             else
             {
