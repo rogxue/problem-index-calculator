@@ -197,6 +197,10 @@ namespace ProblemIndexCalculator
                 {
                     lblActiveIndex.Text = "Problem Index: " + dip.probIndex.ToString();
                     lblActiveIndex.Visible = true;
+                    txtRty.Text = dip.rty.ToString();
+                    txtOba.Text = dip.oba.ToString();
+                    txtHot.Text = dip.hot.ToString();
+                    txtAgrr.Text = dip.agrr.ToString();
                     active = true;
                     break;
                 }
@@ -204,6 +208,13 @@ namespace ProblemIndexCalculator
             if (!active)
             {
                 lblActiveIndex.Visible = false;
+                //
+                // Default values
+                //
+                txtRty.Text = "100";
+                txtOba.Text = "0";
+                txtHot.Text = "0";
+                txtAgrr.Text = "0";
             }
         }
 
@@ -355,6 +366,10 @@ namespace ProblemIndexCalculator
                     if (dialogResult == DialogResult.Yes)
                     {
                         dip.probIndex = probIndex;
+                        dip.rty = rty;
+                        dip.oba = oba;
+                        dip.hot = hot;
+                        dip.agrr = agrr;
                         product.WriteToXml(file);
                         SetActiveProblemIndex();
                         break;
@@ -367,7 +382,7 @@ namespace ProblemIndexCalculator
             }
             if (!exists)
             {
-                product.dipList.Add(new DateIndexPair(date, probIndex));
+                product.dipList.Add(new DateIndexPair(date, probIndex, rty, oba, hot, agrr));
                 product.WriteToXml(file);
                 SetActiveProblemIndex();
             }
@@ -385,7 +400,7 @@ namespace ProblemIndexCalculator
         private void ParseXml(string filename)
         {
             product = new Product();
-            String date = "";
+            DateIndexPair dip = new DateIndexPair();
             XmlTextReader reader = new XmlTextReader(filename);
             while (reader.Read())
             {
@@ -455,12 +470,33 @@ namespace ProblemIndexCalculator
                         else if (reader.Name == "Date")
                         {
                             reader.Read();
-                            date = reader.Value;
+                            dip = new DateIndexPair(reader.Value, 0);
                         }
                         else if (reader.Name == "Index")
                         {
                             reader.Read();
-                            product.dipList.Add(new DateIndexPair(date, int.Parse(reader.Value)));
+                            dip.probIndex = int.Parse(reader.Value);
+                        }
+                        else if (reader.Name == "Rty")
+                        {
+                            reader.Read();
+                            dip.rty = double.Parse(reader.Value);
+                        }
+                        else if (reader.Name == "Oba")
+                        {
+                            reader.Read();
+                            dip.oba = double.Parse(reader.Value);
+                        }
+                        else if (reader.Name == "Hot")
+                        {
+                            reader.Read();
+                            dip.hot = int.Parse(reader.Value);
+                        }
+                        else if (reader.Name == "Agrr")
+                        {
+                            reader.Read();
+                            dip.agrr = double.Parse(reader.Value);
+                            product.dipList.Add(dip);
                         }
                         break;
                 }
@@ -502,13 +538,6 @@ namespace ProblemIndexCalculator
             saveToolStripMenuItem.Enabled = true;
             lblProductLabel.Visible = true;
             lblProduct.Visible = true;
-            //
-            // Default values
-            //
-            txtRty.Text = "100";
-            txtOba.Text = "0";
-            txtHot.Text = "0";
-            txtAgrr.Text = "0";
         }
 
         private void SetWeightValues()

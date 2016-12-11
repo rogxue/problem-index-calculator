@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ProblemIndexCalculator
 {
@@ -24,11 +20,44 @@ namespace ProblemIndexCalculator
             get;
             set;
         }
+        public double rty
+        {
+            get;
+            set;
+        }
+        public double oba
+        {
+            get;
+            set;
+        }
+        public int hot
+        {
+            get;
+            set;
+        }
+        public double agrr
+        {
+            get;
+            set;
+        }
+        public DateIndexPair()
+        {
 
+        }
         public DateIndexPair(String date, int probIndex)
         {
             this.date = date;
             this.probIndex = probIndex;
+            ParseString(date);
+        }
+        public DateIndexPair(String date, int probIndex, double rty, double oba, int hot, double agrr)
+        {
+            this.date = date;
+            this.probIndex = probIndex;
+            this.rty = rty;
+            this.oba = oba;
+            this.hot = hot;
+            this.agrr = agrr;
             ParseString(date);
         }
         private void ParseString(String s)

@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 
 namespace ProblemIndexCalculator
@@ -122,7 +119,10 @@ namespace ProblemIndexCalculator
 
                     writer.WriteElementString("Date", dip.GetDateDirtyText());
                     writer.WriteElementString("Index", dip.probIndex.ToString());
-
+                    writer.WriteElementString("Rty", dip.rty.ToString());
+                    writer.WriteElementString("Oba", dip.oba.ToString());
+                    writer.WriteElementString("Hot", dip.hot.ToString());
+                    writer.WriteElementString("Agrr", dip.agrr.ToString());
                     writer.WriteEndElement();
                 }
 
